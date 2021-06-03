@@ -1,0 +1,182 @@
+<html>
+	<head>
+		<title>Calculadora</title>
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="./events.js"></script>
+    <style>
+      .calculadora {
+        margin-top: 40px;
+        border: solid 1px #000;
+        padding: 20px;
+        background-color: #2E2E2E;
+        border-radius: 10px;
+        box-shadow: 1px 1px 5px #000;
+      }
+
+      .btn {
+        width: 60px;
+        height: 50px;
+        margin: 5px;
+        box-shadow: 1px 1px 1px #000;
+      }
+
+      .clear {
+        width: 130px;
+      }
+
+      .enter {
+        height: 110px;
+      }
+
+      .zero {
+        width: 130px;
+      }
+
+      .resultado {
+        text-align: right;
+        font-size: 20px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        border: solid 1px #000;
+        box-shadow: 1px 1px 1px #000;
+      }
+
+    </style>
+	</head>
+
+  <body style="background: #D9D9D9">
+
+    <div class="container">
+      <div class="row">
+        <div class="col d-flex justify-content-center">
+          <br />
+
+          <div class="calculadora">
+            <input type="text" class="form-control resultado" placeholder="0" disabled="disabled" />
+            
+            <div class="row">
+              <button type="button" id="clean" class="btn btn-dark btn-lg clear font-weight-light">C</button>
+              <button type="button" id="divi" class="btn btn-dark btn-lg font-weight-light">/</button>
+              <button type="button" id="mult" class="btn btn-dark btn-lg font-weight-light">x</button>
+            </div>
+
+            <div class="row">
+              <button type="button" id="n_7" class="btn btn-dark btn-lg font-weight-light">7</button>
+              <button type="button" id="n_8" class="btn btn-dark btn-lg font-weight-light">8</button>
+              <button type="button" id="n_9" class="btn btn-dark btn-lg font-weight-light">9</button>
+              <button type="button" id="subt" class="btn btn-dark btn-lg font-weight-light">-</button>
+            </div>
+            
+            <div class="row">
+              <button type="button" id="n_4" class="btn btn-dark btn-lg font-weight-light">4</button>
+              <button type="button" id="n_5" class="btn btn-dark btn-lg font-weight-light">5</button>
+              <button type="button" id="n_6" class="btn btn-dark btn-lg font-weight-light">6</button>
+              <button type="button" id="sum" class="btn btn-dark btn-lg font-weight-light">+</button>
+            </div>
+
+            <div class="row">
+              <button type="button" id="n_1" class="btn btn-dark btn-lg font-weight-light">1</button>
+              <button type="button" id="n_2" class="btn btn-dark btn-lg font-weight-light">2</button>
+              <button type="button" id="n_3" class="btn btn-dark btn-lg font-weight-light">3</button>
+              <button type="button" id="equal" class="btn btn-dark btn-lg enter">=</button>
+            </div>
+
+            <div class="row" style="margin-top: -60px">
+              <button type="button" id="n_0" class="btn btn-dark zero btn-lg font-weight-light">0</button>
+              <button type="button" id="dot" class="btn btn-dark btn-lg font-weight-light">.</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>    
+  </body>	
+</html>
+<script>
+  var left = ""
+  var right = ""
+  var operator
+  var rsl 
+
+  for(var n = 0; n <= 9; n++){         
+    document.getElementById("n_"+n).setAttribute("onclick", "addNum("+n+")");
+  }    
+
+  document.getElementById("subt").onclick = () => { addOperator("-") }  
+  document.getElementById("sum").onclick = () => { addOperator("+") }  
+  document.getElementById("mult").onclick = () => { addOperator("*") }  
+  document.getElementById("divi").onclick = () => { addOperator("/") }  
+
+  document.getElementById("dot").onclick = () => { addNum(".") }  
+  document.getElementById("equal").onclick = () => { calc() }  
+  document.getElementById("clean").onclick = () => { clean(); showDisplay(null); }  
+
+  var display = document.getElementsByTagName("input")[0];
+
+  function addNum(num){    
+    if(operator == null){
+      left += num;
+      showDisplay("side-left");
+    }else{
+      right += num;
+      showDisplay("side-right");
+    }    
+    console.log("Left: ", left);
+    console.log("Right: ",right);
+  }  
+
+  function addOperator(op){
+    operator = op;     
+    showDisplay("side-operator");
+  }
+
+  function showDisplay(carac){
+    switch(carac){
+      case "side-left":
+        display.setAttribute("value", left);
+        break;
+      case "side-operator":        
+        display.setAttribute("value", left+" "+operator);
+        break;      
+      case "side-right":         
+        display.setAttribute("value", left+" "+operator+" "+right);      
+        break;
+      case "side-rsl":         
+        display.setAttribute("value", left+" "+operator+" "+right+" = "+rsl);              
+        break;
+      default:
+        display.setAttribute("value", "");                    
+    }    
+  }
+
+  function calc(){    
+    if(operator != null){
+      switch(operator){
+        case "-": 
+          rsl = parseFloat(left) - parseFloat(right);
+          break;
+        case "+": 
+          rsl = parseFloat(left) + parseFloat(right);
+          break;   
+        case "*": 
+          rsl = parseFloat(left) * parseFloat(right);
+          break;                  
+        case "/": 
+          rsl = parseFloat(left) / parseFloat(right);
+          break;                  
+      }      
+      console.log("Resultado: ", rsl);
+      showDisplay("side-rsl");      
+      clean();
+    }    
+  }
+
+  function clean(){        
+    left = "";
+    right = "";
+    operator = null;    
+  }
+
+</script>
